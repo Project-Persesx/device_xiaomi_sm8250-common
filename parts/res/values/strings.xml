@@ -45,4 +45,8 @@
     <string name="refresh_default">Default</string>
     <string name="refresh_standard">60Hz</string>    
     <string name="refresh_extreme">120Hz</string>    
+    <!-- High Touch Polling -->
+    <string name="htsr_title">Touch Responsiveness</string>
+    <string name="htsr_enable_title">Increase Touch Responsiveness</string>
+    <string name="htsr_enable_summary">Increases touch polling rate to decrease latency</string>    
 </resources>
