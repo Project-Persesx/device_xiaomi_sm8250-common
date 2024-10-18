@@ -344,7 +344,10 @@
         <item>com.android.camera</item>
     </string-array>
 
-
     <!-- Feature flag to store TaskSnapshot in 16 bit pixel format to save memory. -->
     <bool name="config_use16BitTaskSnapshotPixelFormat">true</bool>
+
+    <!-- the number of the max cached processes in the system. -->
+    <integer name="config_customizedMaxCachedProcesses">96</integer>
+
 </resources>
