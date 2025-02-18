@@ -169,6 +169,15 @@ vendor.display.qdcm.mode_combine=1
 vendor.display.use_layer_ext=0
 vendor.display.use_smooth_motion=1
 debug.sdm.support_writeback=0
+# Battery Saving
+persist.radio.add_power_save=1
+pm.sleep_mode=1
+ro.ril.disable.power.collapse=0
+ro.ril.fast.dormancy.rule=1
+ro.ril.fast.dormancy.timeout=3
+ro.mot.eri.losalert.delay=100
+ro.vold.umsdirtyratio=20
+power.saving.mode=1
 
 # DRM
 drm.service.enabled=true
