@@ -273,6 +273,7 @@ vendor.usb.use_ffs_mtp=1
 vendor.usb.use_gadget_hal=1
 
 # Volume steps
+ro.config.media_vol_steps=25
 ro.config.vc_call_vol_steps=11
 
 # WiFi
