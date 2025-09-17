@@ -205,7 +205,6 @@ vendor.gatekeeper.disable_spu=true
 
 # Graphics
 debug.mdpcomp.logs=0
-debug.sf.disable_client_composition_cache=1
 debug.sf.enable_advanced_sf_phase_offset=1
 debug.sf.enable_gl_backpressure=1
 debug.sf.disable_backpressure=1
@@ -215,7 +214,7 @@ debug.sf.high_fps_early_phase_offset_ns=-4000000
 debug.sf.high_fps_late_app_phase_offset_ns=1000000
 debug.sf.high_fps_late_sf_phase_offset_ns=-4000000
 debug.sf.treat_170m_as_sRGB=1
-debug.sf.latch_unsignaled=0
+debug.sf.auto_latch_unsignaled=0
 ro.hardware.egl=adreno
 ro.hardware.vulkan=adreno
 ro.opengles.version=196610
