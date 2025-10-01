@@ -132,6 +132,11 @@ ro.bluetooth.a2dp_offload.supported=true
 ro.vendor.bluetooth.wipower=false
 vendor.qcom.bluetooth.soc=hastings
 
+# HWUI
+debug.hwui.use_hint_manager=true
+debug.sf.enable_adpf_cpu_hint=true
+debug.hwui.target_cpu_time_percent=35
+
 # Chipset
 ro.soc.manufacturer=QTI
 ro.soc.model=SM8250
@@ -170,6 +175,7 @@ vendor.display.qdcm.mode_combine=1
 vendor.display.use_layer_ext=0
 vendor.display.use_smooth_motion=1
 debug.sdm.support_writeback=0
+
 # Battery Saving
 persist.radio.add_power_save=1
 pm.sleep_mode=1
@@ -274,6 +280,3 @@ wifi.aware.interface=wifi-aware0
 
 # Zygote
 zygote.critical_window.minute=10
-
-# HWUI
-ro.hwui.render_ahead=2
