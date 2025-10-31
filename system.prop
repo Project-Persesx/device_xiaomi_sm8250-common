@@ -13,7 +13,7 @@ persist.sys.appcompact.rss_throttle_kb=12000
 persist.sys.appcompact.delta_rss_throttle_kb=8000
 persist.sys.perf.topAppRenderThreadBoost.enable=false
 
-#Disbale FPS capping for games
+# Disbale FPS capping for games
 debug.graphics.game_default_frame_rate.disabled=true
 
 # App launch prefetching (IORapd)
@@ -98,3 +98,7 @@ vendor.sys.thermal.data.path=/data/vendor/thermal/
 ro.vendor.dfps.enable=false
 ro.vendor.smart_dfps.enable=false
 
+# QTI Mem Optimisation
+persist.vendor.sys.memplus.enable=false
+ro.vendor.qti.sys.fw.bg_apps_limit=30
+ro.vendor.qti.sys.fw.bservice_limit=60
