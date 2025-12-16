@@ -55,9 +55,29 @@ public class RefreshRateTileService extends TileService {
     }
 
     private int getSettingOf(String key) {
-        float rate = Settings.System.getFloat(context.getContentResolver(), key, 60);
-        return availableRates.indexOf(
-                Float.valueOf(String.format(Locale.US, "%.02f", rate)));
+    float rate = Settings.System.getFloat(context.getContentResolver(), key, 60);
+    int index = availableRates.indexOf(
+            Float.valueOf(String.format(Locale.US, "%.02f", rate)));
+
+    if (index == -1) {
+        android.util.Log.w("RefreshRateTile", "Rate " + rate + " not found in available rates, finding closest match");
+
+        float minDiff = Float.MAX_VALUE;
+        int closestIndex = 0;
+
+        for (int i = 0; i < availableRates.size(); i++) {
+            float diff = Math.abs(availableRates.get(i) - rate);
+            if (diff < minDiff) {
+                minDiff = diff;
+                closestIndex = i;
+            }
+        }
+
+        return closestIndex;
+    }
+
+    return index;
+
     }
 
     private void syncFromSettings() {
@@ -84,10 +104,24 @@ public class RefreshRateTileService extends TileService {
     }
 
     private void updateTileView() {
-        String displayText;
-        float min = availableRates.get(activeRateMin);
-        float max = availableRates.get(activeRateMax);
+    if (activeRateMin < 0 || activeRateMin >= availableRates.size()) {
+        activeRateMin = 0;
+    }
+    if (activeRateMax < 0 || activeRateMax >= availableRates.size()) {
+        activeRateMax = availableRates.size() - 1;
+    }
 
+    String displayText;
+    float min = availableRates.get(activeRateMin);
+    float max = availableRates.get(activeRateMax);
+    }
+        displayText = String.format(Locale.US, min == max ? "%s" : "%s - %s",
+            getFormatRate(min), getFormatRate(max));
+        tile.setContentDescription(displayText);
+        tile.setSubtitle(displayText);
+        tile.setState(min == max ? Tile.STATE_ACTIVE : Tile.STATE_INACTIVE);
+        tile.updateTile();
+    }
         displayText = String.format(Locale.US, min == max ? "%s" : "%s - %s",
             getFormatRate(min), getFormatRate(max));
         tile.setContentDescription(displayText);
