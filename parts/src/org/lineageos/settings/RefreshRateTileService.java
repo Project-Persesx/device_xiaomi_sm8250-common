@@ -42,57 +42,111 @@ public class RefreshRateTileService extends TileService {
     public void onCreate() {
         super.onCreate();
         context = getApplicationContext();
-        Display.Mode mode = context.getDisplay().getMode();
-        Display.Mode[] modes = context.getDisplay().getSupportedModes();
+
+        Display display = context.getDisplay();
+        if (display == null) {
+            return;
+        }
+
+        Display.Mode currentMode = display.getMode();
+        Display.Mode[] modes = display.getSupportedModes();
+
         for (Display.Mode m : modes) {
-            float rate = Float.valueOf(String.format(Locale.US, "%.02f", m.getRefreshRate()));
-            if (m.getPhysicalWidth() == mode.getPhysicalWidth() &&
-                m.getPhysicalHeight() == mode.getPhysicalHeight()) {
-                availableRates.add(rate);
+            if (m.getPhysicalWidth() == currentMode.getPhysicalWidth()
+                    && m.getPhysicalHeight() == currentMode.getPhysicalHeight()) {
+                float rate = Float.valueOf(
+                        String.format(Locale.US, "%.02f", m.getRefreshRate()));
+                if (!availableRates.contains(rate)) {
+                    availableRates.add(rate);
+                }
             }
         }
+
         syncFromSettings();
     }
 
     private int getSettingOf(String key) {
-        float rate = Settings.System.getFloat(context.getContentResolver(), key, 60);
-        return availableRates.indexOf(
+        if (availableRates.isEmpty()) {
+            return 0;
+        }
+
+        float rate = Settings.System.getFloat(
+                context.getContentResolver(), key, 60);
+
+        int index = availableRates.indexOf(
                 Float.valueOf(String.format(Locale.US, "%.02f", rate)));
+
+        // Fallback if setting does not match any supported rate
+        return index >= 0 ? index : 0;
     }
 
     private void syncFromSettings() {
+        if (availableRates.isEmpty()) {
+            activeRateMin = 0;
+            activeRateMax = 0;
+            return;
+        }
+
         activeRateMin = getSettingOf(KEY_MIN_REFRESH_RATE);
         activeRateMax = getSettingOf(KEY_PEAK_REFRESH_RATE);
+
+        // Clamp for extra safety
+        activeRateMin = Math.max(0,
+                Math.min(activeRateMin, availableRates.size() - 1));
+        activeRateMax = Math.max(0,
+                Math.min(activeRateMax, availableRates.size() - 1));
     }
 
     private void cycleRefreshRate() {
-        if (activeRateMin < availableRates.size() - 1) {
-            activeRateMin++;
-        } else {
-            activeRateMin = 0;
+        if (availableRates.isEmpty()) {
+            return;
         }
 
+        activeRateMin = (activeRateMin + 1) % availableRates.size();
         float rate = availableRates.get(activeRateMin);
-        Settings.System.putFloat(context.getContentResolver(), KEY_MIN_REFRESH_RATE, rate);
-        Settings.System.putFloat(context.getContentResolver(), KEY_PREFERRED_REFRESH_RATE, rate);
-        Settings.System.putFloat(context.getContentResolver(), KEY_PEAK_REFRESH_RATE, rate);
+
+        Settings.System.putFloat(context.getContentResolver(),
+                KEY_MIN_REFRESH_RATE, rate);
+        Settings.System.putFloat(context.getContentResolver(),
+                KEY_PREFERRED_REFRESH_RATE, rate);
+        Settings.System.putFloat(context.getContentResolver(),
+                KEY_PEAK_REFRESH_RATE, rate);
     }
 
     private String getFormatRate(float rate) {
-        return String.format("%.02f Hz", rate)
-                            .replaceAll("[\\.,]00", "");
+        return String.format(Locale.US, "%.02f Hz", rate)
+                .replaceAll("[\\.,]00", "");
     }
 
     private void updateTileView() {
-        String displayText;
+        if (tile == null || availableRates.isEmpty()) {
+            return;
+        }
+
+        if (activeRateMin < 0 || activeRateMin >= availableRates.size() ||
+            activeRateMax < 0 || activeRateMax >= availableRates.size()) {
+            syncFromSettings();
+            if (activeRateMin < 0 || activeRateMin >= availableRates.size() ||
+                activeRateMax < 0 || activeRateMax >= availableRates.size()) {
+                return;
+            }
+        }
+
         float min = availableRates.get(activeRateMin);
         float max = availableRates.get(activeRateMax);
 
-        displayText = String.format(Locale.US, min == max ? "%s" : "%s - %s",
-            getFormatRate(min), getFormatRate(max));
+        String displayText = String.format(
+                Locale.US,
+                min == max ? "%s" : "%s - %s",
+                getFormatRate(min),
+                getFormatRate(max)
+        );
+
         tile.setContentDescription(displayText);
         tile.setSubtitle(displayText);
-        tile.setState(min == max ? Tile.STATE_ACTIVE : Tile.STATE_INACTIVE);
+        tile.setState(min == max
+                ? Tile.STATE_ACTIVE
+                : Tile.STATE_INACTIVE);
         tile.updateTile();
     }
 
