@@ -208,4 +208,19 @@ public final class FileUtils {
             stopService(context);
         }
     }
+
+    public static boolean writeValue(String filename, String value) {
+        try {
+            FileWriter writer = new FileWriter(filename);
+            try {
+                writer.write(value);
+            } finally {
+                writer.close();
+            }
+            return true;
+        } catch (IOException e) {
+            Log.e(TAG, "Unable to write " + filename, e);
+            return false;
+        }
+    }
 }
