@@ -230,7 +230,16 @@
             </intent-filter>
         </service>
 
-<activity
+        <receiver
+            android:name=".charge.BypassChargeBootReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
+            </intent-filter>
+                </receiver>
+
+        <activity
             android:name=".TileHandlerActivity"
             android:exported="false"
             android:theme="@android:style/Theme.NoDisplay"
