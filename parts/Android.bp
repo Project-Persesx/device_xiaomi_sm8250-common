@@ -19,6 +19,8 @@ android_app {
         "org.lineageos.settings.resources",
         "SettingsLib",
         "//hardware/xiaomi:vendor.xiaomi.hardware.touchfeature-V1.0-java",
+        "androidx.preference_preference",
+        "com.google.android.material_material",
     ],
 
     optimize: {
